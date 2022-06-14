@@ -23,7 +23,7 @@ export async function  getLyric ( path: string, ){
 
   
 
- return Vdon('#lyrics').html()?.replaceAll('<br><br>', "##").split("##") as String[]
+ return Vdon('#lyrics').html()?.replaceAll('<br><br>', "##").split("##") as string[]
 
 }
 
