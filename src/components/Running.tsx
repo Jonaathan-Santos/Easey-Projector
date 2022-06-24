@@ -26,8 +26,8 @@ function Running() {
           <div 
             className='w-[60px] h-[60px] flex m-4 items-center justify-center bg-zinc-700 rounded-md cursor-pointer'
             onClick={()=> {
-              setIndex(Index - 1)
-              controls.setStorage({target: 'INDEX', payload:{index: Index}})
+              const respondePrevIndex = controls.prevIndex()
+              setIndex(respondePrevIndex)
             }}
           >
             <ArrowLeft weight="bold"size={30}/>
@@ -35,9 +35,8 @@ function Running() {
           <div 
             className='w-[60px] h-[60px] flex m-4 items-center justify-center bg-zinc-700 rounded-md cursor-pointer'
             onClick={()=> {
-              console.log(Index)
-              setIndex(Index + 1)
-              controls.setStorage({target: 'INDEX', payload:{index: Index}})
+              const responseNextIndex = controls.nextIndex()
+              setIndex(responseNextIndex)
             }} 
           >
             <ArrowRight weight="bold" size={30} />
@@ -49,12 +48,22 @@ function Running() {
         {
           lyricList
             .map(
-              (item: string, index: number) => <div style={{ borderColor: "#169f49", borderWidth: Index == index ? "3px" : "0" }} className='bg-black p-1 my-2 rounded-md flex flex-col items-center justify-center border-transparent'>
+              (item: string, key: number) => 
+                <div 
+                  style={{ borderColor: "#169f49", borderWidth: Index == key ? "3px" : "0" }} 
+                  className='bg-black p-1 my-2 rounded-md flex flex-col cursor-pointer items-center justify-center border-transparent'
+                  onClick={()=> {
+                    
+                    setIndex(key)
+                    controls.setStorage({target: 'INDEX', payload:{index: key}})
+                  }} 
+                  key={key}
+                >
                 {
                   item.split("<br>").map((item: string, index: number) => <span className='text-center' key={index}>{item}</span>)
                 }
                 <div className="w-full bg-zinc-900 mt-2 flex justify-center text-green-500 text-lg">
-                  {index}
+                  {key}
                 </div>
               </div>
             )}

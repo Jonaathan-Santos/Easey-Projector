@@ -22,7 +22,21 @@ function initStorage(){
   }
 }
 
-export default {resetStorage, setStorage, getStorage, initStorage}
+function nextIndex(){
+  if(getStorage({ target: "INDEX" }).index < (getStorage({ target: "LYRIC" }).lyric.length -1)){
+    setStorage({target: 'INDEX', payload:{index: getStorage({ target: "INDEX" }).index + 1 }})
+  }
+  return getStorage({ target: "INDEX" }).index
+}
+
+function prevIndex(){
+  if(getStorage({ target: "INDEX" }).index > 0){
+    setStorage({target: 'INDEX', payload:{index: getStorage({ target: "INDEX" }).index - 1 }})
+  }
+  return getStorage({ target: "INDEX" }).index
+}
+
+export default {resetStorage, setStorage, getStorage, initStorage, prevIndex, nextIndex}
 
 
 
