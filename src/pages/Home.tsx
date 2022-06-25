@@ -11,19 +11,19 @@ function Home() {
 
   useEffect(() => {
     controls.initStorage()
-    setIsPlay(controls.getStorage({target: "STATE" }).state)
-    console.log("ta rodando")
+    setIsPlay(controls.getStorage({target: "STATE" }).state as boolean)
   },[])
   
 
   function onPlay (){
     setIsPlay(true)
+    controls.setStorage({target: "STATE", payload: {state: true}})
   }
   return (
     <>
       <Header />
       {
-        !IsPlay? <Search onPlay={onPlay} /> : <Running/>
+        !IsPlay? <Search onPlay={onPlay} /> : <Running onStop={setIsPlay}/>
       }
       
     </>
