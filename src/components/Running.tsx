@@ -1,5 +1,5 @@
-import { ArrowArcRight, ArrowBendDoubleUpLeft, ArrowLeft, ArrowRight, Play } from 'phosphor-react'
-import React, { useState } from 'react'
+import { ArrowArcRight, ArrowBendDoubleUpLeft, ArrowLeft, ArrowRight, Pause, Play } from 'phosphor-react'
+import React, { useEffect, useState } from 'react'
 import controls from '../utils/controls'
 
 interface RunningProps{
@@ -10,8 +10,15 @@ function Running({onStop}: RunningProps) {
 
 
   const [Index, setIndex] = useState<number>(0)
+  const [IsPused, setIsPused] = useState<boolean>(false)
 
   const lyricList = controls.getStorage({ target: "LYRIC" }).lyric
+
+  useEffect(() => {
+    const paused = controls.getStorage({target: "ISPAUSED"})
+    setIsPused(paused)
+  }, [])
+  
   
 
 
@@ -26,47 +33,53 @@ function Running({onStop}: RunningProps) {
     setIndex(responseNextIndex)
   }
 
+  function onPlayOrPaused(){
+    controls.setStorage({target: 'ISPAUSED', payload: {isPaused: !IsPused }})
+    setIsPused(!IsPused)
+  }
+
+  document.onkeydown = (e) => {
+
+    switch (e.code) {
+      case "ArrowLeft":
+        prevLyric()
+        
+        break;
+      case "ArrowUp":
+        prevLyric()
+        break;
+
+      case "ArrowRight":
+        nextLyric()
+        break;
+
+      case "ArrowDown":
+        nextLyric()
+        break;
+
+      case "Space":
+        onPlayOrPaused()
+        break;
+
+      case "Escape":
+
+        controls.setStorage({target: "STATE", payload: {state: false}})
+        onStop(false)
+
+        break;
+      default:
+        break;
+    }
+  }
+
   return (
     <div
       className='w-full h-[calc(100vh-70px)] bg-zinc-800 flex'
-      onKeyDown={(e) => {
-
-        switch (e.code) {
-          case "ArrowLeft":
-            prevLyric()
-            
-
-          case "ArrowUp":
-            prevLyric()
-            break;
-
-          case "ArrowRight":
-            nextLyric()
-            break;
-
-          case "ArrowDown":
-            nextLyric()
-            break;
-
-          case "Space":
-            break;
-
-          case "Escape":
-
-            controls.setStorage({target: "STATE", payload: {state: false}})
-            onStop(false)
-
-            break;
-          default:
-            break;
-        }
-      }}
-      tabIndex={0}
     >
       <div className='h-full flex-1 bg-zinc-900 flex flex-col items-center'>
         <div className='w-3/4 flex flex-col '>
 
-          <div className='w-full h-[300px] bg-black select-none flex flex-col items-center justify-center'>
+          <div className='w-full h-[280px] bg-black select-none flex flex-col items-center justify-center'>
             {lyricList[Index].split("<br>").map((item: string, index: number) => <span className='text-center' key={index}>{item}</span>)}
           </div>
           <div className='w-full flex'>
@@ -74,7 +87,6 @@ function Running({onStop}: RunningProps) {
               {lyricList[Index == 0 ? Index : Index - 1].split("<br>").map((item: string, index: number) => <span className='text-center' key={index}>{item}</span>)}
             </div>
             <div className='w-1/2 h-[100px] bg-black select-none text-xs border-green-600 border-solid border-y-2 border-x-2 flex flex-col items-center justify-center'>
-
               {lyricList[Index == (lyricList.length - 1)? Index : Index + 1].split("<br>").map((item: string, index: number) => <span className='text-center' key={index}>{item}</span>)}
             </div>
 
@@ -82,8 +94,16 @@ function Running({onStop}: RunningProps) {
         </div>
 
         <span className='m-4 text-green-600'><a href='/apresentacao' target="_blank" >Abir tela de apresentação</a></span>
-        <div className='w-[60px] h-[60px] bg-green-600 flex justify-center items-center rounded-full animate-pulse m-3'>
-          <Play size={40} weight="fill" />
+        <div 
+          className='w-[60px] h-[60px] min-h-[60px] bg-green-600 flex justify-center items-center rounded-full animate-pulse m-3'
+          onClick={onPlayOrPaused}
+        >
+          {
+            !IsPused?
+            <Play size={40} weight="fill" />
+            :
+            <Pause size={40} weight="fill"/>
+          }
         </div>
         <div className='flex'>
 
@@ -117,7 +137,7 @@ function Running({onStop}: RunningProps) {
               (item: string, key: number) =>
                 <div
                   style={{ borderColor: "#169f49", borderWidth: Index == key ? "3px" : "0" }}
-                  className='bg-black p-1 my-2 rounded-md flex select-none flex-col cursor-pointer items-center justify-center border-transparent'
+                  className='bg-black p-1 my-2 rounded-md flex select-none flex-col cursor-pointer items-center justify-center border-transparent min-h-[150px]'
                   onClick={() => {
 
                     setIndex(key)
@@ -125,9 +145,11 @@ function Running({onStop}: RunningProps) {
                   }}
                   key={key}
                 >
-                  {
-                    item.split("<br>").map((item: string, index: number) => <span className='text-center' key={index}>{item}</span>)
-                  }
+                  <div className='w-full flex-1 flex items-center justify-center flex-col'>
+                    {
+                      item.split("<br>").map((item: string, index: number) => <span className='text-center' key={index}>{item}</span>)
+                    }
+                  </div>
                   <div className="w-full bg-zinc-900 mt-2 flex justify-center text-green-500 text-lg">
                     {key}
                   </div>

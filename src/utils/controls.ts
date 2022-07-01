@@ -20,6 +20,12 @@ function initStorage(){
     localStorage.setItem("STATE", JSON.stringify({state: false}))
 
   }
+  if(!localStorage.getItem("ISPAUSED")){
+
+    
+    localStorage.setItem("ISPAUSED", JSON.stringify({isPaused: false}))
+
+  }
 }
 
 function nextIndex(){

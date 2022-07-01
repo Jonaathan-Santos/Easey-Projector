@@ -4,8 +4,9 @@ export interface payload {
   lyric?: string[]
   state?: boolean
   index?: number
+  isPaused?: boolean
 }
 export interface ConfigType{
-  target: "LYRIC" | "IMAGE" | "STATE"|  "INDEX";
+  target: "LYRIC" | "IMAGE" | "STATE"|  "INDEX" | "ISPAUSED";
   payload?: payload
 }
