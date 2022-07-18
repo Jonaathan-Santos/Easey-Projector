@@ -1,26 +1,54 @@
 
 import { useEffect, useState } from "react"
 import { Outlet } from "react-router-dom"
-import Header from "./components/Header"
-import { getLyric } from "./utils/api"
+
+
+
+
 
 
 function App() {
 
   const [Letra, setLetra] = useState<String[]>([])
+  const [Screen, setScreen] = useState<boolean>(true)
+
+
+  window.addEventListener('resize', () => {
+    if (window.screen.width < 770 && Screen) {
+      setScreen(false)
+    }
+    if (window.screen.width > 770 && !Screen) {
+      setScreen(true)
+    }
+  })
 
   useEffect(() => {
 
-    getLyric('https://www.vagalume.com.br/anderson-freire/raridade.html')
-      .then(response => setLetra(response))
+    setScreen(window.screen.width > 770)
 
   }, [])
 
 
 
+
   return (
     <>
-      <Outlet/>
+      {
+        Screen ?
+          <Outlet />
+          :
+          <div className="w-full h-screen bg-zinc-800 flex justify-center flex-col items-center text-2xl">
+            <span className="text-4xl text-green-500 my-4">
+              Easy Projector
+            </span>
+            <span className="text-center">
+              Esta aplicação não pode ser executada em dispositivos mobiles
+            </span>
+            <span className="text-lg my-4">
+              Sinto muito!
+            </span>
+          </div>
+      }
     </>
   )
 }
